@@ -1,14 +1,14 @@
 {
- 	    "builtin": "False",
-            "default_enabled": "True",
-            "type": "extension",
-            "rocket_mode_compatible": "False",
-            "name": "Viavoz",
-            "description": "Plugins da Viavoz",
-            "author": "Hudson César",
-            "author_profile": "https://bimcoder.net/",
-            "url": "https://github.com/HudsonCesarM/Viavoz.git",
-            "website": "",
-            "image": "",
-            "dependencies": []
-	},
+ 	"builtin": "False",
+        "default_enabled": "True",
+        "type": "extension",
+        "rocket_mode_compatible": "False",
+        "name": "Viavoz",
+        "description": "Plugins da Viavoz",
+        "author": "Hudson César",
+        "author_profile": "https://bimcoder.net/",
+        "url": "https://github.com/HudsonCesarM/Viavoz.git",
+        "website": "",
+        "image": "",
+        "dependencies": []
+}
