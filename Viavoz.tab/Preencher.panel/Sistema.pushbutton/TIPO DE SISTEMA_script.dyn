@@ -149,7 +149,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "import clr\r\nclr.AddReference('System.Windows.Forms')\r\nclr.AddReference('System.Drawing')\r\n\r\nfrom System.Windows.Forms import Application, Form, Label, TextBox, Button, FormStartPosition\r\nfrom System.Drawing import Point, Size, Color\r\n\r\nclass MyForm(Form):\r\n    def __init__(self, theme='Dark'):\r\n        # Configurações do Formulário\r\n        self.Text = \"Parâmetro ORÇAMENTO TIPO DE SISTEMA\"\r\n        self.Size = Size(350, 300)\r\n        self.StartPosition = FormStartPosition.CenterScreen\r\n        self.ShowIcon = False\r\n        self.MaximizeBox = False\r\n        self.MinimizeBox = False\r\n\r\n        # Configuração do tema\r\n        if theme == 'Light':\r\n            self.BackColor = Color.White\r\n            self.ForeColor = Color.Black\r\n        else:\r\n            self.BackColor = Color.FromArgb(45, 45, 48)  # Dark theme\r\n            self.ForeColor = Color.White\r\n\r\n        self.create_form()\r\n        self.create_ok_button()\r\n\r\n    def create_form(self):\r\n        \"\"\"Cria a Label com as opções e o campo de entrada de texto.\"\"\"\r\n        lbl_options = Label()\r\n        lbl_options.Text = \"\\nEscolha uma opção:\\n\\n1 - AUTOMACAO\\n2 - CFTV\\n3 - ELETRICO\\n4 - INCENDIO\\n5 - LUMINOTECNICO\\n6 - CABEAMENTO ESTRUTURADO\\n7 - SPDA\\n8 - SDAI\"\r\n        lbl_options.Location = Point(20, 20)\r\n        lbl_options.Size = Size(300, 120)\r\n        lbl_options.AutoSize = True\r\n        self.Controls.Add(lbl_options)\r\n\r\n        self.txt_input = TextBox()\r\n        self.txt_input.Location = Point(20, 170)\r\n        self.txt_input.Size = Size(240, 30)\r\n        self.Controls.Add(self.txt_input)\r\n\r\n    def create_ok_button(self):\r\n        \"\"\"Cria o botão OK para capturar o texto e fechar o formulário.\"\"\"\r\n        btn_ok = Button()\r\n        btn_ok.Text = \"OK\"\r\n        btn_ok.Location = Point((self.ClientSize.Width - 100) // 2, 200)\r\n        btn_ok.Size = Size(100, 30)\r\n        btn_ok.Click += self.on_ok\r\n        self.Controls.Add(btn_ok)\r\n\r\n    def on_ok(self, sender, event):\r\n        \"\"\"Captura o texto digitado e fecha o formulário.\"\"\"\r\n        options = {\r\n            1: \"AUTOMACAO\",\r\n            2: \"CFTV\",\r\n            3: \"ELETRICO\",\r\n            4: \"INCENDIO\",\r\n            5: \"LUMINOTECNICO\",\r\n            6: \"CABEAMENTO ESTRUTURADO\",\r\n            7: \"SPDA\",\r\n            8: \"SDAI\"\r\n        }\r\n\r\n        try:\r\n            input_value = int(self.txt_input.Text)\r\n            if input_value in options:\r\n                self.user_input = options[input_value]\r\n            else:\r\n                self.user_input = None\r\n                self.show_error(\"Por favor, escolha uma opção válida (1-8).\")\r\n        except ValueError:\r\n            self.user_input = None\r\n            self.show_error(\"Por favor, insira um número válido.\")\r\n\r\n        self.Close()\r\n\r\n    def show_error(self, message):\r\n        \"\"\"Exibe uma mensagem de erro.\"\"\"\r\n        error_label = Label()\r\n        error_label.Text = message\r\n        error_label.Location = Point(20, 220)\r\n        error_label.Size = Size(300, 30)\r\n        error_label.ForeColor = Color.Red\r\n        self.Controls.Add(error_label)\r\n\r\n# Criação do formulário\r\ntheme = \"Dark\"  # Você pode mudar para \"Light\" se quiser o tema claro\r\nform = MyForm(theme)\r\nApplication.Run(form)\r\n\r\n# O texto correspondente à opção escolhida será armazenado na variável 'form.user_input'\r\nOUT = form.user_input\r\n",
+      "Code": "import clr\r\nclr.AddReference('System.Windows.Forms')\r\nclr.AddReference('System.Drawing')\r\n\r\nfrom System.Windows.Forms import Application, Form, Label, TextBox, Button, FormStartPosition\r\nfrom System.Drawing import Point, Size, Color\r\n\r\nclass MyForm(Form):\r\n    def __init__(self, theme='Dark'):\r\n        # Configurações do Formulário\r\n        self.Text = \"Parâmetro ORÇAMENTO TIPO DE SISTEMA\"\r\n        self.Size = Size(300, 350)\r\n        self.StartPosition = FormStartPosition.CenterScreen\r\n        self.ShowIcon = False\r\n        self.MaximizeBox = False\r\n        self.MinimizeBox = False\r\n\r\n        # Configuração do tema\r\n        if theme == 'Light':\r\n            self.BackColor = Color.White\r\n            self.ForeColor = Color.Black\r\n        else:\r\n            self.BackColor = Color.FromArgb(45, 45, 48)  # Dark theme\r\n            self.ForeColor = Color.White\r\n\r\n        self.create_form()\r\n        self.create_ok_button()\r\n\r\n    def create_form(self):\r\n        \"\"\"Cria a Label com as opções e o campo de entrada de texto.\"\"\"\r\n        lbl_options = Label()\r\n        lbl_options.Text = (\"\\nEscolha uma opção:\\n\\n\"\r\n                            \"1 - ARQUITETURA\\n\"\r\n                            \"2 - AUTOMACAO\\n\"\r\n                            \"3 - CABEAMENTO ESTRUTURADO\\n\"\r\n                            \"4 - CFTV\\n\"\r\n                            \"5 - ELETRICO\\n\"\r\n                            \"6 - EST. CONCRETO\\n\"\r\n                            \"7 - EST. METALICA\\n\"\r\n                            \"8 - HIDRAULICO\\n\"\r\n                            \"9 - INCENDIO\\n\"\r\n                            \"10 - LUMINOTECNICO\\n\"\r\n                            \"11 - SDAI\\n\"\r\n                            \"12 - SPDA\")\r\n        lbl_options.Location = Point(20, 20)\r\n        lbl_options.Size = Size(330, 160)\r\n        lbl_options.AutoSize = True\r\n        self.Controls.Add(lbl_options)\r\n\r\n        self.txt_input = TextBox()\r\n        self.txt_input.Location = Point(20, 220)\r\n        self.txt_input.Size = Size(200, 30)\r\n        self.Controls.Add(self.txt_input)\r\n\r\n    def create_ok_button(self):\r\n        \"\"\"Cria o botão OK para capturar o texto e fechar o formulário.\"\"\"\r\n        btn_ok = Button()\r\n        btn_ok.Text = \"OK\"\r\n        btn_ok.Location = Point((self.ClientSize.Width - 100) // 2, 260)\r\n        btn_ok.Size = Size(100, 30)\r\n        btn_ok.Click += self.on_ok\r\n        self.Controls.Add(btn_ok)\r\n\r\n    def on_ok(self, sender, event):\r\n        \"\"\"Captura o texto digitado e fecha o formulário.\"\"\"\r\n        options = {\r\n            1: \"ARQUITETURA\",\r\n            2: \"AUTOMACAO\",\r\n            3: \"CABEAMENTO ESTRUTURADO\",\r\n            4: \"CFTV\",\r\n            5: \"ELETRICO\",\r\n            6: \"EST. CONCRETO\",\r\n            7: \"EST. METALICA\",\r\n            8: \"HIDRAULICO\",\r\n            9: \"INCENDIO\",\r\n            10: \"LUMINOTECNICO\",\r\n            11: \"SDAI\",\r\n            12: \"SPDA\"\r\n        }\r\n\r\n        try:\r\n            input_value = int(self.txt_input.Text)\r\n            if input_value in options:\r\n                self.user_input = options[input_value]\r\n            else:\r\n                self.user_input = None\r\n                self.show_error(\"Por favor, escolha uma opção válida (1-12).\")\r\n        except ValueError:\r\n            self.user_input = None\r\n            self.show_error(\"Por favor, insira um número válido.\")\r\n\r\n        self.Close()\r\n\r\n    def show_error(self, message):\r\n        \"\"\"Exibe uma mensagem de erro.\"\"\"\r\n        error_label = Label()\r\n        error_label.Text = message\r\n        error_label.Location = Point(20, 260)\r\n        error_label.Size = Size(300, 30)\r\n        error_label.ForeColor = Color.Red\r\n        self.Controls.Add(error_label)\r\n\r\n# Criação do formulário\r\ntheme = \"Dark\"  # Você pode mudar para \"Light\" se quiser o tema claro\r\nform = MyForm(theme)\r\nApplication.Run(form)\r\n\r\n# O texto correspondente à opção escolhida será armazenado na variável 'form.user_input'\r\nOUT = form.user_input\r\n",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "ba0dba6294e84eebad133dd870a51acd",
@@ -177,6 +177,70 @@
       ],
       "Replication": "Disabled",
       "Description": "Executa um script Python incorporado."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('System.Windows.Forms')\r\nclr.AddReference('System.Drawing')\r\n\r\nfrom System.Windows.Forms import Application, Form, Label, TextBox, Button, FormStartPosition\r\nfrom System.Drawing import Point, Size, Color\r\n\r\nclass MyForm(Form):\r\n    def __init__(self, theme='Dark'):\r\n        # Configurações do Formulário\r\n        self.Text = \"Parâmetro ORÇAMENTO TIPO DE SISTEMA\"\r\n        self.Size = Size(350, 300)\r\n        self.StartPosition = FormStartPosition.CenterScreen\r\n        self.ShowIcon = False\r\n        self.MaximizeBox = False\r\n        self.MinimizeBox = False\r\n\r\n        # Configuração do tema\r\n        if theme == 'Light':\r\n            self.BackColor = Color.White\r\n            self.ForeColor = Color.Black\r\n        else:\r\n            self.BackColor = Color.FromArgb(45, 45, 48)  # Dark theme\r\n            self.ForeColor = Color.White\r\n\r\n        self.create_form()\r\n        self.create_ok_button()\r\n\r\n    def create_form(self):\r\n        \"\"\"Cria a Label com as opções e o campo de entrada de texto.\"\"\"\r\n        lbl_options = Label()\r\n        lbl_options.Text = \"\\nEscolha uma opção:\\n\\n1 - AUTOMACAO\\n2 - CFTV\\n3 - ELETRICO\\n4 - INCENDIO\\n5 - LUMINOTECNICO\\n6 - CABEAMENTO ESTRUTURADO\\n7 - SPDA\\n8 - SDAI\"\r\n        lbl_options.Location = Point(20, 20)\r\n        lbl_options.Size = Size(300, 120)\r\n        lbl_options.AutoSize = True\r\n        self.Controls.Add(lbl_options)\r\n\r\n        self.txt_input = TextBox()\r\n        self.txt_input.Location = Point(20, 170)\r\n        self.txt_input.Size = Size(240, 30)\r\n        self.Controls.Add(self.txt_input)\r\n\r\n    def create_ok_button(self):\r\n        \"\"\"Cria o botão OK para capturar o texto e fechar o formulário.\"\"\"\r\n        btn_ok = Button()\r\n        btn_ok.Text = \"OK\"\r\n        btn_ok.Location = Point((self.ClientSize.Width - 100) // 2, 200)\r\n        btn_ok.Size = Size(100, 30)\r\n        btn_ok.Click += self.on_ok\r\n        self.Controls.Add(btn_ok)\r\n\r\n    def on_ok(self, sender, event):\r\n        \"\"\"Captura o texto digitado e fecha o formulário.\"\"\"\r\n        options = {\r\n            1: \"AUTOMACAO\",\r\n            2: \"CFTV\",\r\n            3: \"ELETRICO\",\r\n            4: \"INCENDIO\",\r\n            5: \"LUMINOTECNICO\",\r\n            6: \"CABEAMENTO ESTRUTURADO\",\r\n            7: \"SPDA\",\r\n            8: \"SDAI\"\r\n        }\r\n\r\n        try:\r\n            input_value = int(self.txt_input.Text)\r\n            if input_value in options:\r\n                self.user_input = options[input_value]\r\n            else:\r\n                self.user_input = None\r\n                self.show_error(\"Por favor, escolha uma opção válida (1-8).\")\r\n        except ValueError:\r\n            self.user_input = None\r\n            self.show_error(\"Por favor, insira um número válido.\")\r\n\r\n        self.Close()\r\n\r\n    def show_error(self, message):\r\n        \"\"\"Exibe uma mensagem de erro.\"\"\"\r\n        error_label = Label()\r\n        error_label.Text = message\r\n        error_label.Location = Point(20, 220)\r\n        error_label.Size = Size(300, 30)\r\n        error_label.ForeColor = Color.Red\r\n        self.Controls.Add(error_label)\r\n\r\n# Criação do formulário\r\ntheme = \"Dark\"  # Você pode mudar para \"Light\" se quiser o tema claro\r\nform = MyForm(theme)\r\nApplication.Run(form)\r\n\r\n# O texto correspondente à opção escolhida será armazenado na variável 'form.user_input'\r\nOUT = form.user_input\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "17d29759362f4e7abcccc16331719f8e",
+      "Inputs": [
+        {
+          "Id": "c7178eeb7f954c1198625696eebf98a5",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc5147a03b6e437bb91890acc59bea27",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('System.Windows.Forms')\r\nclr.AddReference('System.Drawing')\r\n\r\nfrom System.Windows.Forms import Application, Form, Label, TextBox, Button, FormStartPosition\r\nfrom System.Drawing import Point, Size, Color\r\n\r\nclass MyForm(Form):\r\n    def __init__(self, theme='Dark'):\r\n        # Configurações do Formulário\r\n        self.Text = \"Parâmetro ORÇAMENTO TIPO DE SISTEMA\"\r\n        self.Size = Size(300, 350)\r\n        self.StartPosition = FormStartPosition.CenterScreen\r\n        self.ShowIcon = False\r\n        self.MaximizeBox = False\r\n        self.MinimizeBox = False\r\n\r\n        # Configuração do tema\r\n        if theme == 'Light':\r\n            self.BackColor = Color.White\r\n            self.ForeColor = Color.Black\r\n        else:\r\n            self.BackColor = Color.FromArgb(45, 45, 48)  # Dark theme\r\n            self.ForeColor = Color.White\r\n\r\n        self.create_form()\r\n        self.create_ok_button()\r\n\r\n    def create_form(self):\r\n        \"\"\"Cria a Label com as opções e o campo de entrada de texto.\"\"\"\r\n        lbl_options = Label()\r\n        lbl_options.Text = (\"\\nEscolha uma opção:\\n\\n\"\r\n                            \"1 - ARQUITETURA\\n\"\r\n                            \"2 - AUTOMACAO\\n\"\r\n                            \"3 - CABEAMENTO ESTRUTURADO\\n\"\r\n                            \"4 - CFTV\\n\"\r\n                            \"5 - ELETRICO\\n\"\r\n                            \"6 - EST. CONCRETO\\n\"\r\n                            \"7 - EST. METALICA\\n\"\r\n                            \"8 - HIDRAULICO\\n\"\r\n                            \"9 - INCENDIO\\n\"\r\n                            \"10 - LUMINOTECNICO\\n\"\r\n                            \"11 - SDAI\\n\"\r\n                            \"12 - SPDA\")\r\n        lbl_options.Location = Point(20, 20)\r\n        lbl_options.Size = Size(330, 160)\r\n        lbl_options.AutoSize = True\r\n        self.Controls.Add(lbl_options)\r\n\r\n        self.txt_input = TextBox()\r\n        self.txt_input.Location = Point(20, 220)\r\n        self.txt_input.Size = Size(200, 30)\r\n        self.Controls.Add(self.txt_input)\r\n\r\n    def create_ok_button(self):\r\n        \"\"\"Cria o botão OK para capturar o texto e fechar o formulário.\"\"\"\r\n        btn_ok = Button()\r\n        btn_ok.Text = \"OK\"\r\n        btn_ok.Location = Point((self.ClientSize.Width - 100) // 2, 260)\r\n        btn_ok.Size = Size(100, 30)\r\n        btn_ok.Click += self.on_ok\r\n        self.Controls.Add(btn_ok)\r\n\r\n    def on_ok(self, sender, event):\r\n        \"\"\"Captura o texto digitado e fecha o formulário.\"\"\"\r\n        options = {\r\n            1: \"ARQUITETURA\",\r\n            2: \"AUTOMACAO\",\r\n            3: \"CABEAMENTO ESTRUTURADO\",\r\n            4: \"CFTV\",\r\n            5: \"ELETRICO\",\r\n            6: \"EST. CONCRETO\",\r\n            7: \"EST. METALICA\",\r\n            8: \"HIDRAULICO\",\r\n            9: \"INCENDIO\",\r\n            10: \"LUMINOTECNICO\",\r\n            11: \"SDAI\",\r\n            12: \"SPDA\"\r\n        }\r\n\r\n        try:\r\n            input_value = int(self.txt_input.Text)\r\n            if input_value in options:\r\n                self.user_input = options[input_value]\r\n            else:\r\n                self.user_input = None\r\n                self.show_error(\"Por favor, escolha uma opção válida (1-12).\")\r\n        except ValueError:\r\n            self.user_input = None\r\n            self.show_error(\"Por favor, insira um número válido.\")\r\n\r\n        self.Close()\r\n\r\n    def show_error(self, message):\r\n        \"\"\"Exibe uma mensagem de erro.\"\"\"\r\n        error_label = Label()\r\n        error_label.Text = message\r\n        error_label.Location = Point(20, 260)\r\n        error_label.Size = Size(300, 30)\r\n        error_label.ForeColor = Color.Red\r\n        self.Controls.Add(error_label)\r\n\r\n# Criação do formulário\r\ntheme = \"Dark\"  # Você pode mudar para \"Light\" se quiser o tema claro\r\nform = MyForm(theme)\r\nApplication.Run(form)\r\n\r\n# O texto correspondente à opção escolhida será armazenado na variável 'form.user_input'\r\nOUT = form.user_input\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "090b89768de74b598647a583e40efbed",
+      "Inputs": [
+        {
+          "Id": "c69f182664224a2ab653c6ab27fc50a8",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ac7f9f8ac024b72adfe3e65b22037ca",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
     }
   ],
   "Connectors": [
@@ -193,9 +257,9 @@
       "IsHidden": "False"
     },
     {
-      "Start": "6f80c559d8a14db0afbb440437ab7c00",
+      "Start": "5ac7f9f8ac024b72adfe3e65b22037ca",
       "End": "e32677c97c1c47e09f81e51f3f124f1b",
-      "Id": "b0d432ea37b043d4a240ca69bf65eab7",
+      "Id": "f219b05ca2be4e7ba4f57eb029e0e3ab",
       "IsHidden": "False"
     }
   ],
@@ -294,14 +358,34 @@
         "Id": "ba0dba6294e84eebad133dd870a51acd",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": -41.553187798067881,
+        "Y": 773.5778745001669
+      },
+      {
+        "Name": "TEXTO",
+        "ShowGeometry": true,
+        "Id": "17d29759362f4e7abcccc16331719f8e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": -33.001806008925143,
+        "Y": 586.04125645002659
+      },
+      {
+        "Name": "TEXTO",
+        "ShowGeometry": true,
+        "Id": "090b89768de74b598647a583e40efbed",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 289.35196948991114,
-        "Y": 424.9412040283072
+        "X": 254.65690009446951,
+        "Y": 483.27639378225615
       }
     ],
     "Annotations": [],
-    "X": 265.75133913207168,
-    "Y": 44.09473192707901,
-    "Zoom": 0.6407320092427643
+    "X": 66.229161238179543,
+    "Y": -35.974480941005424,
+    "Zoom": 0.676761192096621
   }
 }
