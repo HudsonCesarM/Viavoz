@@ -1,0 +1,564 @@
+{
+  "Uuid": "cbe26318-2308-453d-b8a1-35a528bdf381",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TIPO DE SISTEMA_script",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('System.Windows.Forms')\r\nclr.AddReference('System.Drawing')\r\n\r\nfrom System.Windows.Forms import Application, Form, Label, TextBox, Button, FormStartPosition\r\nfrom System.Drawing import Point, Size, Color\r\n\r\nclass MyForm(Form):\r\n    def __init__(self, theme='Dark'):\r\n        # Configurações do Formulário\r\n        self.Text = \"Parâmetro ORÇAMENTO TIPO DE SISTEMA\"\r\n        self.Size = Size(350, 200)\r\n        self.StartPosition = FormStartPosition.CenterScreen\r\n        self.ShowIcon = False\r\n        self.MaximizeBox = False\r\n        self.MinimizeBox = False\r\n\r\n        # Configuração do tema\r\n        if theme == 'Light':\r\n            self.BackColor = Color.White\r\n            self.ForeColor = Color.Black\r\n        else:\r\n            self.BackColor = Color.FromArgb(45, 45, 48)  # Dark theme\r\n            self.ForeColor = Color.White\r\n\r\n        self.create_form()\r\n        self.create_ok_button()\r\n\r\n    def create_form(self):\r\n        \"\"\"Cria a Label e o campo de entrada de texto.\"\"\"\r\n        lbl = Label()\r\n        lbl.Text = \"Digite o texto:\"\r\n        lbl.Location = Point(20, 20)\r\n        lbl.Size = Size(150, 30)\r\n        self.Controls.Add(lbl)\r\n\r\n        self.txt_input = TextBox()\r\n        self.txt_input.Location = Point(20, 50)\r\n        self.txt_input.Size = Size(240, 30)\r\n        self.Controls.Add(self.txt_input)\r\n\r\n    def create_ok_button(self):\r\n        \"\"\"Cria o botão OK para capturar o texto e fechar o formulário.\"\"\"\r\n        btn_ok = Button()\r\n        btn_ok.Text = \"OK\"\r\n        btn_ok.Location = Point((self.ClientSize.Width - 100) // 2, 90)\r\n        btn_ok.Size = Size(100, 30)\r\n        btn_ok.Click += self.on_ok\r\n        self.Controls.Add(btn_ok)\r\n\r\n    def on_ok(self, sender, event):\r\n        \"\"\"Captura o texto digitado e fecha o formulário.\"\"\"\r\n        self.user_input = self.txt_input.Text\r\n        self.Close()\r\n\r\n# Criação do formulário\r\ntheme = \"Dark\"  # Você pode mudar para \"Light\" se quiser o tema claro\r\nform = MyForm(theme)\r\nApplication.Run(form)\r\n\r\n# O texto inserido pelo usuário será armazenado na variável 'form.user_input'\r\nOUT = form.user_input\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "eed387aad76b45adbcde7db4be1589bd",
+      "Inputs": [
+        {
+          "Id": "cd3a959d411947619874ff4ae9a2c99f",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d9638a2b6294b76982261f187dcaba1",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('RevitServices')\r\nclr.AddReference('RevitAPI')\r\nclr.AddReference('RevitAPIUI')\r\n\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\nfrom Autodesk.Revit.DB import Element\r\n\r\n# Obter o documento ativo do Revit\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n# Obter os elementos selecionados a partir de IN[0] e o texto da IN[1]\r\nelements = UnwrapElement(IN[0])  # Desembrulha os elementos do Dynamo\r\ntext_to_set = IN[1]  # Texto a ser inserido no parâmetro \"ORÇAMENTO TIPO DE SISTEMA\"\r\n\r\n# Iniciar uma transação para modificar os parâmetros no Revit\r\nTransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n# Iterar sobre os elementos e definir o valor no parâmetro \"ORÇAMENTO TIPO DE SISTEMA\"\r\nfor element in elements:\r\n    marca_param = element.LookupParameter(\"ORÇAMENTO TIPO DE SISTEMA\")\r\n    if marca_param and not marca_param.IsReadOnly:\r\n        marca_param.Set(text_to_set)\r\n\r\n# Finalizar a transação\r\nTransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Saída\r\nOUT = \"Texto atualizado no parâmetro 'ORÇAMENTO TIPO DE SISTEMA' para {} elementos.\".format(len(elements))\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "499628238e654e7295272e757a058a3a",
+      "Inputs": [
+        {
+          "Id": "44d7424967db4458a973a1bf53e169f7",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e32677c97c1c47e09f81e51f3f124f1b",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f0fe0c8ffa324548b1212ab8ce06eced",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Importando bibliotecas necessárias\r\nimport clr\r\nclr.AddReference('RevitAPI')\r\nclr.AddReference('RevitServices')\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom Autodesk.Revit.DB import ElementId, FilteredElementCollector\r\n\r\n# Obtendo o documento ativo do Revit\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n# Função para obter elementos filhos\r\ndef get_child_elements(element):\r\n    child_elements = []\r\n    \r\n    # Coletor para buscar elementos\r\n    collector = FilteredElementCollector(doc).WhereElementIsNotElementType()\r\n    \r\n    for el in collector:\r\n        # Verifica se o elemento é filho do elemento pai (ajuste conforme a lógica necessária)\r\n        if el.GetType() == element.GetType() and el.OwnerViewId == element.OwnerViewId:\r\n            child_elements.append(el)\r\n    \r\n    return child_elements\r\n\r\n# Processando a entrada (lista de elementos)\r\ninput_elements = UnwrapElement(IN[0])  # IN[0] é a entrada da lista de elementos\r\nall_child_elements = []\r\n\r\nfor elem in input_elements:\r\n    children = get_child_elements(elem)\r\n    all_child_elements.extend(children)  # Adiciona os filhos à lista principal\r\n\r\n# Saída: lista única de todos os elementos filhos\r\nOUT = all_child_elements\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "a03091fc7cfa4ed1a20db2c0357a8153",
+      "Inputs": [
+        {
+          "Id": "0a76876967874e839e587d2272953ff2",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9bbafb9ea3ce4477a803964445ec38bb",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('System.Windows.Forms')\r\nclr.AddReference('System.Drawing')\r\n\r\nfrom System.Windows.Forms import Application, Form, Label, TextBox, Button, FormStartPosition\r\nfrom System.Drawing import Point, Size, Color\r\n\r\nclass MyForm(Form):\r\n    def __init__(self, theme='Dark'):\r\n        # Configurações do Formulário\r\n        self.Text = \"Parâmetro ORÇAMENTO TIPO DE SISTEMA\"\r\n        self.Size = Size(350, 300)\r\n        self.StartPosition = FormStartPosition.CenterScreen\r\n        self.ShowIcon = False\r\n        self.MaximizeBox = False\r\n        self.MinimizeBox = False\r\n\r\n        # Configuração do tema\r\n        if theme == 'Light':\r\n            self.BackColor = Color.White\r\n            self.ForeColor = Color.Black\r\n        else:\r\n            self.BackColor = Color.FromArgb(45, 45, 48)  # Dark theme\r\n            self.ForeColor = Color.White\r\n\r\n        self.create_form()\r\n        self.create_ok_button()\r\n\r\n    def create_form(self):\r\n        \"\"\"Cria a Label com as opções e o campo de entrada de texto.\"\"\"\r\n        lbl_options = Label()\r\n        lbl_options.Text = \"\\nEscolha uma opção:\\n\\n1 - AUTOMACAO\\n2 - CFTV\\n3 - ELETRICO\\n4 - INCENDIO\\n5 - LUMINOTECNICO\\n6 - CABEAMENTO ESTRUTURADO\\n7 - SPDA\\n8 - SDAI\"\r\n        lbl_options.Location = Point(20, 20)\r\n        lbl_options.Size = Size(300, 120)\r\n        lbl_options.AutoSize = True\r\n        self.Controls.Add(lbl_options)\r\n\r\n        self.txt_input = TextBox()\r\n        self.txt_input.Location = Point(20, 170)\r\n        self.txt_input.Size = Size(240, 30)\r\n        self.Controls.Add(self.txt_input)\r\n\r\n    def create_ok_button(self):\r\n        \"\"\"Cria o botão OK para capturar o texto e fechar o formulário.\"\"\"\r\n        btn_ok = Button()\r\n        btn_ok.Text = \"OK\"\r\n        btn_ok.Location = Point((self.ClientSize.Width - 100) // 2, 200)\r\n        btn_ok.Size = Size(100, 30)\r\n        btn_ok.Click += self.on_ok\r\n        self.Controls.Add(btn_ok)\r\n\r\n    def on_ok(self, sender, event):\r\n        \"\"\"Captura o texto digitado e fecha o formulário.\"\"\"\r\n        options = {\r\n            1: \"AUTOMACAO\",\r\n            2: \"CFTV\",\r\n            3: \"ELETRICO\",\r\n            4: \"INCENDIO\",\r\n            5: \"LUMINOTECNICO\",\r\n            6: \"CABEAMENTO ESTRUTURADO\",\r\n            7: \"SPDA\",\r\n            8: \"SDAI\"\r\n        }\r\n\r\n        try:\r\n            input_value = int(self.txt_input.Text)\r\n            if input_value in options:\r\n                self.user_input = options[input_value]\r\n            else:\r\n                self.user_input = None\r\n                self.show_error(\"Por favor, escolha uma opção válida (1-8).\")\r\n        except ValueError:\r\n            self.user_input = None\r\n            self.show_error(\"Por favor, insira um número válido.\")\r\n\r\n        self.Close()\r\n\r\n    def show_error(self, message):\r\n        \"\"\"Exibe uma mensagem de erro.\"\"\"\r\n        error_label = Label()\r\n        error_label.Text = message\r\n        error_label.Location = Point(20, 220)\r\n        error_label.Size = Size(300, 30)\r\n        error_label.ForeColor = Color.Red\r\n        self.Controls.Add(error_label)\r\n\r\n# Criação do formulário\r\ntheme = \"Dark\"  # Você pode mudar para \"Light\" se quiser o tema claro\r\nform = MyForm(theme)\r\nApplication.Run(form)\r\n\r\n# O texto correspondente à opção escolhida será armazenado na variável 'form.user_input'\r\nOUT = form.user_input\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "ba0dba6294e84eebad133dd870a51acd",
+      "Inputs": [
+        {
+          "Id": "9b68c20305794642a42136624ca92d4b",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6f80c559d8a14db0afbb440437ab7c00",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Element.GetChildElements",
+      "Id": "f19c41c1ab1a456b97046a740ad6c843",
+      "Inputs": [
+        {
+          "Id": "f078435f0a724f78b5c62291dd5d621b",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4bff9b097fe342b28ceb5b64e6a74e97",
+          "Name": "Element[]",
+          "Description": "Elementos secundários.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Longest",
+      "Description": "Obtém os elementos secundários do elemento atual.\n\nElement.GetChildElements ( ): Element[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "36f3a5371d6446fabfe32483ed043c6d",
+      "Inputs": [
+        {
+          "Id": "f985f7c0aea04532a77187aef1f57926",
+          "Name": "item0",
+          "Description": "Índice do item nº 0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "859ba656cab84e78955ecb21f175d0b8",
+          "Name": "list",
+          "Description": "Uma lista (tipo: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Cria uma nova saída da lista das entradas determinadas"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
+      "Id": "d537674ddf11492296d5f32255e94334",
+      "Inputs": [
+        {
+          "Id": "68ca7090cccb4d3ebed9727d176d718c",
+          "Name": "list",
+          "Description": "Lista para aplainar.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "092e3fa3899a4a6fa814190eeb526fbc",
+          "Name": "amount",
+          "Description": "Camadas de aninhamento de listas a serem removidas (-1 removerá todos os aninhamentos de listas)\n\nint\nValor padrão : -1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c729917f78ce4d4aa11e38b16b6dfed1",
+          "Name": "list",
+          "Description": "Lista nivelada por quantidade",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Aplaina uma lista aninhada de listas por um determinado montante.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.IsNull@var",
+      "Id": "05909d0aae28499bbc6e072e0f67db03",
+      "Inputs": [
+        {
+          "Id": "1d4f31e99c83431da71f560c95dd7605",
+          "Name": "object",
+          "Description": "O objeto para testar.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e7bb640c7a74fc7938cf5943284294e",
+          "Name": "bool",
+          "Description": "Se o objeto for nulo.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determina se o objeto especificado é nulo.\n\nObject.IsNull (object: var): bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.FilterByBoolMask@var[]..[],var[]..[]",
+      "Id": "8a80f2a779584a0982412abc50372592",
+      "Inputs": [
+        {
+          "Id": "0623b13038a54454b2314050277714a2",
+          "Name": "list",
+          "Description": "Lista a filtrar.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7671e771694d4ae2b6b0e863dabcf6d5",
+          "Name": "mask",
+          "Description": "Lista de booleanos representando uma máscara.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a1ab8777a93840cd91cb349f33338763",
+          "Name": "in",
+          "Description": "Os itens cujo índice de máscara é verdadeiro.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bbb3f6ad9b5e4c2a8f925b1ce124f172",
+          "Name": "out",
+          "Description": "Os itens cujo índice de máscara é falso.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Filtra uma sequência examinando os índices correspondentes em lista separada de booleanos.\n\nList.FilterByBoolMask (list: var[]..[], mask: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "#TEMPLATE Python Script by BIM Coder\r\n#Versão 1.0 - 08/24\r\n\r\n#---IMPORTAÇÕES\r\n# Sistema e .NET\r\nimport clr\r\nimport sys\r\nimport System\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\n\r\n# Biblioteca de Geometria do Dynamo\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# Nós do Dynamo\r\nclr.AddReference('RevitNodes')\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\n\r\n# Documentos e Transações\r\nclr.AddReference('RevitServices')\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\n# DB da API do Revit\r\nimport Autodesk\r\nclr.AddReference('RevitAPI')\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Interface do usuário da API do Revit\r\nclr.AddReference('RevitAPIUI')\r\nfrom Autodesk.Revit.UI import *\r\n\r\nfrom Autodesk.Revit.UI.Selection import ObjectType\r\n\r\n# Documentos e Interfaces\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\nuiapp = DocumentManager.Instance.CurrentUIApplication\r\napp = uiapp.Application\r\nuidoc = uiapp.ActiveUIDocument\r\n\r\n#---CLASSES E FUNÇÕES\r\n\r\n#---SCRIPT\r\n\r\n# Solicitar ao usuário que selecione múltiplos objetos do tipo Element (por exemplo, paredes, janelas, etc.)\r\n\r\nselected_references = uidoc.Selection.PickObjects(ObjectType.Element)\r\n\r\n# Obter os elementos a partir das referências\r\nselected_elements = [uidoc.Document.GetElement(reference) for reference in selected_references]\r\n\r\n# Saída para o Dynamo (lista de elementos Revit)\r\nOUT = selected_elements\r\n\r\n\r\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "1804c1ab9eb44617b7e31e9346c64cf8",
+      "Inputs": [
+        {
+          "Id": "d718b7b6ea7d40afb9a324d24c8530ac",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "badef45b55b74bb6bd320f2129df1acd",
+          "Name": "OUT",
+          "Description": "Resultado do script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Executa um script Python incorporado."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6f80c559d8a14db0afbb440437ab7c00",
+      "End": "e32677c97c1c47e09f81e51f3f124f1b",
+      "Id": "b0d432ea37b043d4a240ca69bf65eab7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4bff9b097fe342b28ceb5b64e6a74e97",
+      "End": "f985f7c0aea04532a77187aef1f57926",
+      "Id": "1d2f905a9c58420697450321c47582ba",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4bff9b097fe342b28ceb5b64e6a74e97",
+      "End": "68ca7090cccb4d3ebed9727d176d718c",
+      "Id": "d0d90881fcfe4ce2aef94c473f908768",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c729917f78ce4d4aa11e38b16b6dfed1",
+      "End": "1d4f31e99c83431da71f560c95dd7605",
+      "Id": "c94392997f0442659f86c2d0f0883f1d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c729917f78ce4d4aa11e38b16b6dfed1",
+      "End": "0623b13038a54454b2314050277714a2",
+      "Id": "fa9dc66645e24325a40213dd91f4936c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e7bb640c7a74fc7938cf5943284294e",
+      "End": "7671e771694d4ae2b6b0e863dabcf6d5",
+      "Id": "a05ee4f6cf5343978c5b5060444b5f12",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bbb3f6ad9b5e4c2a8f925b1ce124f172",
+      "End": "44d7424967db4458a973a1bf53e169f7",
+      "Id": "f2030e4a08a54ed6b2edd723207f03ea",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "badef45b55b74bb6bd320f2129df1acd",
+      "End": "f078435f0a724f78b5c62291dd5d621b",
+      "Id": "1ae05de1424d4bde92d95a521997e9cd",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "Nenhum",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Visualização do plano de fundo",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "TEXTO",
+        "ShowGeometry": true,
+        "Id": "eed387aad76b45adbcde7db4be1589bd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": -423.26622688159989,
+        "Y": 508.55905580445938
+      },
+      {
+        "Name": "PREENCHER O PARAMETRO",
+        "ShowGeometry": true,
+        "Id": "499628238e654e7295272e757a058a3a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1771.4143077762083,
+        "Y": 238.23340213371614
+      },
+      {
+        "Name": "Python Script",
+        "ShowGeometry": true,
+        "Id": "a03091fc7cfa4ed1a20db2c0357a8153",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 67.790125127732949,
+        "Y": 56.758913348149832
+      },
+      {
+        "Name": "TEXTO",
+        "ShowGeometry": true,
+        "Id": "ba0dba6294e84eebad133dd870a51acd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1570.2395918415032,
+        "Y": 458.99220837023347
+      },
+      {
+        "Name": "Element.GetChildElements",
+        "ShowGeometry": true,
+        "Id": "f19c41c1ab1a456b97046a740ad6c843",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 16.469045808075293,
+        "Y": 295.68000522854692
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "36f3a5371d6446fabfe32483ed043c6d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.40868809387712,
+        "Y": 158.75943672254414
+      },
+      {
+        "Name": "List.Flatten",
+        "ShowGeometry": true,
+        "Id": "d537674ddf11492296d5f32255e94334",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 680.311181904307,
+        "Y": 278.73682711274949
+      },
+      {
+        "Name": "Object.IsNull",
+        "ShowGeometry": true,
+        "Id": "05909d0aae28499bbc6e072e0f67db03",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 908.07660514079555,
+        "Y": 504.00763991488157
+      },
+      {
+        "Name": "List.FilterByBoolMask",
+        "ShowGeometry": true,
+        "Id": "8a80f2a779584a0982412abc50372592",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1147.0411155512568,
+        "Y": 274.25336995216759
+      },
+      {
+        "Name": "SELEÇÃO DOS ELEMENTOS",
+        "ShowGeometry": true,
+        "Id": "1804c1ab9eb44617b7e31e9346c64cf8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -367.6079106509934,
+        "Y": 293.52441472020251
+      }
+    ],
+    "Annotations": [],
+    "X": 313.83610119724869,
+    "Y": 13.46680294248165,
+    "Zoom": 0.54992461871884046
+  }
+}
