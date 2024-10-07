@@ -2091,13 +2091,13 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "#TEMPLATE Python Script by BIM Coder\r\n#Versão 1.0 - 08/24\r\n\r\n#---IMPORTAÇÕES\r\n# Sistema e .NET\r\nimport clr\r\nimport System\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\n\r\n# Biblioteca de Geometria do Dynamo\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# Nós do Dynamo\r\nclr.AddReference('RevitNodes')\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\n\r\n# Documentos e Transações\r\nclr.AddReference('RevitServices')\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\n# DB da API do Revit\r\nimport Autodesk\r\nclr.AddReference('RevitAPI')\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Interface do usuário da API do Revit\r\nclr.AddReference('RevitAPIUI')\r\nfrom Autodesk.Revit.UI import *\r\n\r\nfrom Autodesk.Revit.UI.Selection import ObjectType\r\n\r\n# Documentos e Interfaces\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\nuiapp = DocumentManager.Instance.CurrentUIApplication\r\napp = uiapp.Application\r\nuidoc = uiapp.ActiveUIDocument\r\n\r\n#---ENTRADA 0: Verificar se a unidade foi alterada para centímetros\r\nunit_check = IN[0]\r\n\r\n# Verificando se a entrada 0 é igual a 1 (unidade foi alterada para centímetros)\r\nif unit_check == 1:\r\n    try:\r\n        # Solicitar ao usuário que selecione um objeto do tipo Element (por exemplo, paredes, janelas, etc.)\r\n        selected_reference = uidoc.Selection.PickObject(ObjectType.Element)\r\n        # Obter o elemento a partir da referência\r\n        selected_element = uidoc.Document.GetElement(selected_reference)\r\n\r\n        # Saída para o Dynamo (elemento Revit selecionado)\r\n        OUT = selected_element\r\n\r\n    except Exception as e:\r\n        # Se houver um erro (como se o usuário cancelar a seleção), retornar uma mensagem de erro\r\n        OUT = str(e)\r\nelse:\r\n    # Se a entrada 0 não for 1, exibir uma mensagem dizendo que a unidade não foi alterada\r\n    OUT = \"A unidade não foi alterada para centímetros, seleção de elemento não permitida.\"\r\n",
+      "Code": "# Importando as bibliotecas do Revit e Windows Forms\r\nimport clr\r\nclr.AddReference(\"RevitServices\")\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\nclr.AddReference(\"RevitAPI\")\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Adicionando referência para System.Windows.Forms\r\nclr.AddReference(\"System.Windows.Forms\")\r\nfrom System.Windows.Forms import MessageBox, MessageBoxButtons\r\n\r\n# Obtendo o documento atual do Revit\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n# Função para obter a unidade de comprimento\r\ndef get_length_unit_format(doc):\r\n    # Obtendo as unidades do documento\r\n    units = doc.GetUnits()\r\n\r\n    # Acessando as opções de formato para o comprimento\r\n    format_options = units.GetFormatOptions(SpecTypeId.Length)\r\n\r\n    # Obtendo o ID da unidade de comprimento atual\r\n    unit_type_id = format_options.GetUnitTypeId()\r\n\r\n    # Retornando a unidade de comprimento atual\r\n    return unit_type_id\r\n\r\n# Função para definir a unidade de comprimento para centímetros\r\ndef set_length_unit_to_centimeters(doc):\r\n    # Iniciando uma transação para modificar as unidades\r\n    TransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n    # Obtendo as unidades atuais\r\n    units = doc.GetUnits()\r\n\r\n    # Criando novas opções de formato para definir como centímetros\r\n    format_options = FormatOptions(UnitTypeId.Centimeters)\r\n\r\n    # Definindo as opções para o comprimento (Length)\r\n    units.SetFormatOptions(SpecTypeId.Length, format_options)\r\n\r\n    # Aplicando as mudanças ao documento\r\n    doc.SetUnits(units)\r\n\r\n    # Finalizando a transação\r\n    TransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Obtendo a unidade de comprimento atual\r\nlength_unit = get_length_unit_format(doc)\r\n\r\n# Verificando se a unidade não é centímetros e mudando se necessário\r\nif length_unit != UnitTypeId.Centimeters:\r\n    set_length_unit_to_centimeters(doc)\r\n    result = \"Unidade de comprimento alterada para Centímetros\"\r\nelse:\r\n    result = \"A unidade de comprimento já está em Centímetros\"\r\n\r\n# Exibir uma janela pop-up para o usuário confirmar a mensagem\r\nMessageBox.Show(result, \"Confirmação\", MessageBoxButtons.OK)\r\n\r\n# Retornar 1 para o Dynamo após o usuário clicar em OK\r\nOUT = 1\r\n",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
-      "Id": "a638de42ff764826ba18760535cf04c5",
+      "Id": "b1afc352cd124c65abcadbc3dc8baeef",
       "Inputs": [
         {
-          "Id": "c64db8f7d61f49cb8a3c28aa9af5a16f",
+          "Id": "60cdc1845a7e49b28b7e6e4791a153f9",
           "Name": "IN[0]",
           "Description": "Input #0",
           "UsingDefaultValue": false,
@@ -2108,7 +2108,7 @@
       ],
       "Outputs": [
         {
-          "Id": "663c31f35ea44ca0ac379bf17023b91d",
+          "Id": "7fab862450d94afbbf5bcc263f2afb72",
           "Name": "OUT",
           "Description": "Resultado do script Python",
           "UsingDefaultValue": false,
@@ -2123,13 +2123,13 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "# Importando as bibliotecas do Revit e Windows Forms\r\nimport clr\r\nclr.AddReference(\"RevitServices\")\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\nclr.AddReference(\"RevitAPI\")\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Adicionando referência para System.Windows.Forms\r\nclr.AddReference(\"System.Windows.Forms\")\r\nfrom System.Windows.Forms import MessageBox, MessageBoxButtons\r\n\r\n# Obtendo o documento atual do Revit\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\n# Função para obter a unidade de comprimento\r\ndef get_length_unit_format(doc):\r\n    # Obtendo as unidades do documento\r\n    units = doc.GetUnits()\r\n\r\n    # Acessando as opções de formato para o comprimento\r\n    format_options = units.GetFormatOptions(SpecTypeId.Length)\r\n\r\n    # Obtendo o ID da unidade de comprimento atual\r\n    unit_type_id = format_options.GetUnitTypeId()\r\n\r\n    # Retornando a unidade de comprimento atual\r\n    return unit_type_id\r\n\r\n# Função para definir a unidade de comprimento para centímetros\r\ndef set_length_unit_to_centimeters(doc):\r\n    # Iniciando uma transação para modificar as unidades\r\n    TransactionManager.Instance.EnsureInTransaction(doc)\r\n\r\n    # Obtendo as unidades atuais\r\n    units = doc.GetUnits()\r\n\r\n    # Criando novas opções de formato para definir como centímetros\r\n    format_options = FormatOptions(UnitTypeId.Centimeters)\r\n\r\n    # Definindo as opções para o comprimento (Length)\r\n    units.SetFormatOptions(SpecTypeId.Length, format_options)\r\n\r\n    # Aplicando as mudanças ao documento\r\n    doc.SetUnits(units)\r\n\r\n    # Finalizando a transação\r\n    TransactionManager.Instance.TransactionTaskDone()\r\n\r\n# Obtendo a unidade de comprimento atual\r\nlength_unit = get_length_unit_format(doc)\r\n\r\n# Verificando se a unidade não é centímetros e mudando se necessário\r\nif length_unit != UnitTypeId.Centimeters:\r\n    set_length_unit_to_centimeters(doc)\r\n    result = \"Unidade de comprimento alterada para Centímetros\"\r\nelse:\r\n    result = \"A unidade de comprimento já está em Centímetros\"\r\n\r\n# Exibir uma janela pop-up para o usuário confirmar a mensagem\r\nMessageBox.Show(result, \"Confirmação\", MessageBoxButtons.OK)\r\n\r\n# Retornar 1 para o Dynamo após o usuário clicar em OK\r\nOUT = 1\r\n",
+      "Code": "#TEMPLATE Python Script by BIM Coder\r\n#Versão 1.0 - 08/24\r\n\r\n#---IMPORTAÇÕES\r\n# Sistema e .NET\r\nimport clr\r\nimport System\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\n\r\n# Biblioteca de Geometria do Dynamo\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# Nós do Dynamo\r\nclr.AddReference('RevitNodes')\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\nclr.ImportExtensions(Revit.GeometryConversion)\r\n\r\n# Documentos e Transações\r\nclr.AddReference('RevitServices')\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\n# DB da API do Revit\r\nimport Autodesk\r\nclr.AddReference('RevitAPI')\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Interface do usuário da API do Revit\r\nclr.AddReference('RevitAPIUI')\r\nfrom Autodesk.Revit.UI import *\r\n\r\nfrom Autodesk.Revit.UI.Selection import ObjectType\r\n\r\n# Documentos e Interfaces\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\nuiapp = DocumentManager.Instance.CurrentUIApplication\r\napp = uiapp.Application\r\nuidoc = uiapp.ActiveUIDocument\r\n\r\n#---ENTRADA 0: Verificar se a unidade foi alterada para centímetros\r\nunit_check = IN[0]\r\n\r\n# Verificando se a entrada 0 é igual a 1 (unidade foi alterada para centímetros)\r\nif unit_check == 1:\r\n    try:\r\n        # Solicitar ao usuário que selecione um objeto do tipo Element (por exemplo, paredes, janelas, etc.)\r\n        selected_reference = uidoc.Selection.PickObject(ObjectType.Element)\r\n        # Obter o elemento a partir da referência\r\n        selected_element = uidoc.Document.GetElement(selected_reference)\r\n\r\n        # Saída para o Dynamo (elemento Revit selecionado)\r\n        OUT = selected_element\r\n\r\n    except Exception as e:\r\n        # Se houver um erro (como se o usuário cancelar a seleção), retornar uma mensagem de erro\r\n        OUT = str(e)\r\nelse:\r\n    # Se a entrada 0 não for 1, exibir uma mensagem dizendo que a unidade não foi alterada\r\n    OUT = \"A unidade não foi alterada para centímetros, seleção de elemento não permitida.\"\r\n",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
-      "Id": "cead553c87e04ea69fdeff143dbe3e35",
+      "Id": "20eb2e6297e045ca93dd1ed293d59531",
       "Inputs": [
         {
-          "Id": "1397891ef5c5409daec9461bc5095e41",
+          "Id": "2e9f52e28ca245a9aa8360da8f7eda02",
           "Name": "IN[0]",
           "Description": "Input #0",
           "UsingDefaultValue": false,
@@ -2140,7 +2140,7 @@
       ],
       "Outputs": [
         {
-          "Id": "412a6d85ea7c45c381c849eac71ecfba",
+          "Id": "591180b8be064bd6b6fbb576a81e3c8f",
           "Name": "OUT",
           "Description": "Resultado do script Python",
           "UsingDefaultValue": false,
@@ -2533,15 +2533,15 @@
       "IsHidden": "False"
     },
     {
-      "Start": "663c31f35ea44ca0ac379bf17023b91d",
-      "End": "9be85e2938c44a29be95a939654b6188",
-      "Id": "e364dd53bec84418add60a63af2da735",
+      "Start": "7fab862450d94afbbf5bcc263f2afb72",
+      "End": "2e9f52e28ca245a9aa8360da8f7eda02",
+      "Id": "b540669b1f48420d98fd69152666fc93",
       "IsHidden": "False"
     },
     {
-      "Start": "412a6d85ea7c45c381c849eac71ecfba",
-      "End": "c64db8f7d61f49cb8a3c28aa9af5a16f",
-      "Id": "edfbdeffcdc34e419e700c1295e47508",
+      "Start": "591180b8be064bd6b6fbb576a81e3c8f",
+      "End": "9be85e2938c44a29be95a939654b6188",
+      "Id": "ea7e2a5479584255ac5b5af184bb0964",
       "IsHidden": "False"
     }
   ],
@@ -3249,27 +3249,27 @@
       {
         "Name": "Python Script",
         "ShowGeometry": true,
-        "Id": "a638de42ff764826ba18760535cf04c5",
+        "Id": "b1afc352cd124c65abcadbc3dc8baeef",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 908.90193283535837,
-        "Y": 430.46738092020325
+        "X": 668.44236082654379,
+        "Y": 600.25836748861877
       },
       {
         "Name": "Python Script",
         "ShowGeometry": true,
-        "Id": "cead553c87e04ea69fdeff143dbe3e35",
+        "Id": "20eb2e6297e045ca93dd1ed293d59531",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 688.77778483086013,
-        "Y": 591.32084098561563
+        "X": 966.3241590001486,
+        "Y": 564.17806995454976
       }
     ],
     "Annotations": [],
-    "X": -38.527160501097683,
-    "Y": 101.00802179093461,
-    "Zoom": 0.38839253137851604
+    "X": -308.63909766857984,
+    "Y": -138.75752501891847,
+    "Zoom": 0.59553756917729916
   }
 }
